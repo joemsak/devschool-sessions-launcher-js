@@ -1,7 +1,8 @@
 import React, { Component, PropTypes } from 'react';
-import Login from './Login';
-import Logout from './Logout';
-import { loginUser, logoutUser } from '../actions';
+
+import Login from '../containers/login';
+import Logout from './logout';
+import { logoutUser } from '../actions';
 
 export default class Navbar extends Component {
   render() {
@@ -12,10 +13,7 @@ export default class Navbar extends Component {
         <a className="navbar-brand" href="/">Devschool Sessions</a>
         <div className="form-inline pull-xs-right">
           {!isAuthenticated &&
-            <Login
-              errorMessage={errorMessage}
-              onLoginClick={ creds => dispatch(loginUser(creds)) }
-            />
+            <Login errorMessage={errorMessage} />
           }
 
           {isAuthenticated &&

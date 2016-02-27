@@ -1,15 +1,16 @@
-export const LOGIN_REQUEST = 'LOGIN_REQUEST'
-export const LOGIN_SUCCESS = 'LOGIN_SUCCESS'
-export const LOGIN_FAILURE = 'LOGIN_FAILURE'
+export const LOGIN_REQUEST = 'LOGIN_REQUEST';
+export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
+export const LOGIN_FAILURE = 'LOGIN_FAILURE';
 
-const ROOT_URL = 'http://localhost:3001'
+const PORT = '3001';
+const ROOT_URL = `http://localhost:${PORT}`;
 
 function requestLogin(creds) {
   return {
     type: LOGIN_REQUEST,
     isFetching: true,
     isAuthenticated: false,
-    creds
+    creds,
   }
 }
 
@@ -18,7 +19,7 @@ function receiveLogin(user) {
     type: LOGIN_SUCCESS,
     isFetching: false,
     isAuthenticated: true,
-    id_token: user.id_token
+    id_token: user.id_token,
   }
 }
 
@@ -27,7 +28,7 @@ function loginError(message) {
     type: LOGIN_FAILURE,
     isFetching: false,
     isAuthenticated: false,
-    message
+    message,
   }
 }
 
@@ -35,24 +36,24 @@ export function loginUser(creds) {
   let config = {
     method: 'POST',
     headers: { 'Content-Type':'application/x-www-form-urlencoded' },
-    body: `username=${creds.username}&password=${creds.password}`
+    body: `username=${creds.username}&password=${creds.password}`,
   }
 
   return dispatch => {
-    dispatch(requestLogin(creds))
+    dispatch(requestLogin(creds));
 
-    return fetch(`${ROOT_URL}/sessions/create`, config)
+    return fetch(`/sessions/create`, config)
       .then(response =>
         response.json().then(user => ({ user, response }))
       ).then(({ user, response }) =>  {
         if (!response.ok) {
-          dispatch(loginError(user.message))
-          return Promise.reject(user)
+          dispatch(loginError(user.message));
+          return Promise.reject(user);
         } else {
-          localStorage.setItem('id_token', user.id_token)
-          dispatch(receiveLogin(user))
+          localStorage.setItem('id_token', user.id_token);
+          dispatch(receiveLogin(user));
         }
       }
-    ).catch(err => console.log("Error: ", err))
+    ).catch(err => console.log("Error: ", err));
   }
 }
